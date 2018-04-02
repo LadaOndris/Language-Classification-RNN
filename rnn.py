@@ -13,6 +13,7 @@ import os
 
 from tensorflow.python.ops import rnn, rnn_cell
 
+savePath = "saved/2"
 
 hm_epochs = 5
 n_classes = 2
@@ -22,6 +23,7 @@ rnn_size = 512
 
 x = tf.placeholder("float", [None, 100, 255]) 
 y = tf.placeholder("float")
+
 def recurrent_neural_network(x):
     layer = {'weights':tf.Variable(tf.random_normal([rnn_size, n_classes]), dtype=tf.float32),
              'biases':tf.Variable(tf.random_normal([n_classes]), dtype=tf.float32)}
@@ -39,6 +41,8 @@ def train_neural_network(x, y, train_x, train_y, test_x, test_y):
     cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=prediction, labels=y))
     # learning_rate = 0.001
     optimizer = tf.train.AdamOptimizer().minimize(cost)
+    
+    saver = tf.train.Saver(max_to_keep=0)
     
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
@@ -58,7 +62,12 @@ def train_neural_network(x, y, train_x, train_y, test_x, test_y):
         
             correct = tf.equal(tf.argmax(prediction, 1), tf.argmax(y, 1))
             accuracy = tf.reduce_mean(tf.cast(correct, tf.float32))
-            print('Accuracy:', accuracy.eval({x:test_x, y:test_y}))
+            result = accuracy.eval({x:test_x, y:test_y})
+            print('Accuracy:', result)
+            with open(savePath+"/epochs-log.txt", "a+") as f:
+                f.write("Epoch {0}, accuracy: {1}\n".format(epoch+1, result))
+            
+            saver.save(sess, savePath+"/model", global_step=epoch)
         
         
 def prepare_data(eng, noneng):
@@ -97,14 +106,16 @@ def sentenceToBinary(sentence_as_string):
           
 
 # shuffles both arrays
-def unison_shuffled_copies(a, b, c):
-    assert len(a) == len(b) == len(c)
+def unison_shuffled_copies(a, b):
+    assert len(a) == len(b) 
     p = np.random.permutation(len(a))
-    return a[p], b[p], c[p]
+    return a[p], b[p]
 
   
 filename = 'multilang_sentences_5.pickle'
-if os.path.getsize(filename) > 0:           
+if os.path.getsize(filename) > 0:      
+    if not os.path.exists(savePath):
+        os.makedirs(savePath)     
     with open(filename, 'rb') as f:
         train_eng, train_noneng, test_eng, test_noneng = pickle.load(f)
         train_x, train_y = prepare_data(train_eng, train_noneng)
