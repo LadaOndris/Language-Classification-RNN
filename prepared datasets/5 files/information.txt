@@ -1,0 +1,20 @@
+      index   text
+lang              
+eng   55430  55430
+      index   text
+lang              
+deu    1252   1252
+fra   10332  10332
+ita     322    322
+spa     635    635
+--------------------------------
+Eng_rows total:  55430
+Noneng_rows total:  12541
+Total:  67971
+11286
+11286
+1255
+1255
+22572
+2510
+(22572, 2)
