@@ -1,4 +1,0 @@
-RNN rocognizes whether a given sentence is English or German.
-
-Epoch 1, accuracy: 0.9539999961853027, epoch loss: 117.47622899618
-Epoch 2, accuracy: 0.9359999895095825, epoch loss: 53.28325600363314

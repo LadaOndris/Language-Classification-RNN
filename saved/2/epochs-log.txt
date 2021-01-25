@@ -1,2 +1,0 @@
-Epoch 1, accuracy: 0.49481865763664246
-Epoch 2, accuracy: 0.4954164922237396
